@@ -30,11 +30,10 @@ login_result = client.login(user, password)
 if login_result is not None:
     print(u"登录失败 请检查配置")
 
-categories = set()
 torrents = client.torrents()
 
 maindata = client.sync_main_data()
-categories = maindata['categories'].keys()
+categories = set(maindata['categories'].keys())
 print("已有分类: {}".format(categories))
 
 # 设置分类
@@ -59,8 +58,8 @@ for torrent in torrents:
             if new_category != category:
                 print(u"需要转移{} 到 {}".format(name, new_category))
                 if new_category not in categories:
-                    categories.add(category)
-                    client.create_category(category)
+                    categories.add(new_category)
+                    client.create_category(new_category)
                 client.set_category(_hash, new_category)
                 print(u"添加 {} 到分类 {}".format(name, new_category))
 
