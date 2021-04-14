@@ -3,7 +3,6 @@
 import os
 import argparse
 import time
-
 '''
 创建硬链接
 
@@ -29,13 +28,18 @@ abspath = os.path.abspath
 exists = os.path.exists
 splitext = os.path.splitext
 
+
 def mkdir(path):
     if not exists(path):
+        print("创建目录: {}".format(path))
         os.mkdir(path)
+
 
 def mklink(src, desc):
     if not exists(desc):
+        print("创建硬链接: {} to {}".format(src, desc))
         os.link(src, desc)
+
 
 def hardlink(src_path, desc_path):
     abs_src_path = abspath(src_path)
@@ -51,19 +55,31 @@ def hardlink(src_path, desc_path):
         desc_dir_or_file_path = join(abs_desc_path, dir_or_file)
         if is_file(dir_or_file_path):
             suffix = splitext(dir_or_file_path)[-1]
-            if suffix in [".nfo"]:
+            # 不链接 nfo 文件及图片文件 可根据需求自行需改过滤
+            if suffix in [".nfo", ".jpg", ".png"]:
                 continue
-            if os.path.basename(dir_or_file_path) in ["banner.jpg", "clearart.png", "clearlogo.png", "disc.png", "fanart.jpg", "keyart.jpg", "logo.png", "poster.jpg", "thumb.jpg"]:
+            # 更上一行操作重叠部分
+            if os.path.basename(dir_or_file_path) in [
+                    "banner.jpg", "clearart.png", "clearlogo.png", "disc.png",
+                    "fanart.jpg", "keyart.jpg", "logo.png", "poster.jpg",
+                    "thumb.jpg"
+            ]:
                 continue
-            print("创建硬链接: {} to {}".format(dir_or_file_path, desc_dir_or_file_path))
             mklink(dir_or_file_path, desc_dir_or_file_path)
         elif is_dir(dir_or_file_path):
-            print("创建目录: {}".format(dir_or_file_path))
             mkdir(desc_dir_or_file_path)
             hardlink(dir_or_file_path, desc_dir_or_file_path)
 
 
 if __name__ == "__main__":
+    '''
+    如果不需要提示
+    将下边的代码删除替换成如下代码
+    src = ""  # 配置需要硬链接的路径 如 /volume1/movie
+    desc = ""   # 硬链接到的路径  如 /vomume1/movie_link
+    hardlink(src, desc)
+    '''
+
     parser = argparse.ArgumentParser(description='hard link')
     parser.add_argument('-s', help='src path')
     parser.add_argument('-d', help='desc path')
@@ -84,4 +100,3 @@ if __name__ == "__main__":
             print("取消操作, 退出")
     else:
         print("缺少参数 -s 或 -d")
-
