@@ -56,7 +56,7 @@ def hardlink(src_path, desc_path):
         if is_file(dir_or_file_path):
             suffix = splitext(dir_or_file_path)[-1]
             # 不链接 nfo 文件及图片文件 可根据需求自行需改过滤
-            if suffix in [".nfo", ".jpg", ".png"]:
+            if suffix in [".nfo", ".jpg", ".png", ".jepg"]:
                 continue
             # 更上一行操作重叠部分
             if os.path.basename(dir_or_file_path) in [
